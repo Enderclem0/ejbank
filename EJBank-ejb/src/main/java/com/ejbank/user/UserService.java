@@ -1,8 +1,10 @@
 package com.ejbank.user;
 
+import com.ejbank.entities.User;
+
 import javax.ejb.Local;
 
 @Local
 public interface UserService {
-    String getUserById(String userId);
+    User getUserById(int userId);
 }
