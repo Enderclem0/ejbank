@@ -1,5 +1,6 @@
 package com.ejbank.api;
 
+import com.ejbank.api.payload.UserPayload;
 import com.ejbank.entities.User;
 import com.ejbank.user.UserService;
 
@@ -18,7 +19,11 @@ public class UserResource {
 
     @GET
     @Path("/{user_id}")
-    public User getUserById(@PathParam("user_id") int userId) {
-        return userService.getUserById(userId);
+    public UserPayload getUserById(@PathParam("user_id") int userId) {
+        var user = userService.getUserById(userId);
+        if (user == null) {
+            return null;
+        }
+        return new UserPayload(user.getFirstname(), user.getLastname());
     }
 }
