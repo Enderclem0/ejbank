@@ -2,49 +2,40 @@ FROM payara/server-full:5.2022.4-jdk17
 
 USER root
 
-RUN mkdir -p /opt/payara/appserver/glassfish/domains/domain1/generated/ejb/EJBank
-
-RUN mkdir -p /opt/payara/hotdeploy
-
+# Install mysql driver
 RUN apt-get update && apt-get -y install curl
-RUN curl https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar \
-    -o /opt/payara/appserver/glassfish/domains/domain1/lib/mysql-connector-java-5.1.41.jar
+RUN curl https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.41/mysql-connector-java-5.1.41.jar -o /opt/payara/appserver/glassfish/domains/domain1/lib/mysql-connector-java-5.1.41.jar
 
 ENV PAYARA_ARGS --debug
 
-# Init admin password (same as your original file)
+
 RUN echo 'AS_ADMIN_PASSWORD=\nAS_ADMIN_NEWPASSWORD=admin' > /opt/payara/passwordFile
 
 RUN /opt/payara/appserver/bin/asadmin start-domain && \
     echo "y" | /opt/payara/appserver/bin/asadmin --user admin --passwordfile /opt/payara/passwordFile change-admin-password && \
+    \
     echo 'AS_ADMIN_PASSWORD=admin' > /opt/payara/passwordFile && \
+    \
     echo "y" | /opt/payara/appserver/bin/asadmin --user admin --passwordfile /opt/payara/passwordFile enable-secure-admin && \
     /opt/payara/appserver/bin/asadmin stop-domain
 
 RUN echo 'AS_ADMIN_PASSWORD=admin' > /opt/payara/passwordFile
 
-# JDBC pool
+# Create database pool
 RUN echo 'create-jdbc-connection-pool --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --restype javax.sql.DataSource --property User=root:Port=3306:Password=root:Url="jdbc\:mysql\://db\:3306\/ejbank" EJBankPool' \
- >> $POSTBOOT_COMMANDS
+ > $POSTBOOT_COMMANDS
 
-# JDBC resource
+# Create JNDI link to our database pool
 RUN echo 'create-jdbc-resource --connectionpoolid EJBankPool jdbc/EJBankDS' \
  >> $POSTBOOT_COMMANDS
 
-# Enable dynamic reload + autodeploy
+# Enable autodeploy
 RUN echo 'set server.admin-service.das-config.dynamic-reload-enabled=true' \
  >> $POSTBOOT_COMMANDS
 RUN echo 'set server.admin-service.das-config.autodeploy-enabled=true' \
  >> $POSTBOOT_COMMANDS
 
-# Redirect autodeploy to our new hotdeploy folder
-RUN echo 'set server.admin-service.das-config.autodeploy-dir=/opt/payara/hotdeploy' \
- >> $POSTBOOT_COMMANDS
+COPY ../deployments/EJBank.ear /opt/payara/appserver/glassfish/domains/domain1/autodeploy/EJBank.ear
 
-# (Optional initial deploy)
-COPY ../deployments/EJBank.ear /opt/payara/hotdeploy/EJBank.ear
-
-# Expose Admin Port, HTTP, Debug
+# Expose the Admin Port (4848) alongside HTTP (8181) and Debug (9009)
 EXPOSE 8181 9009 4848
-
-CMD ["/opt/payara/bin/startInForeground"]

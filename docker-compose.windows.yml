@@ -20,17 +20,11 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.windows
-        container_name: app-1
         links:
             - db:db
-        environment:
-          - PAYARA_ARGS=--debug
         ports:
             - 8001:8181
             - 8002:4848
             - 8004:9009
-        volumes:
-          - ./deployments:/opt/payara/hotdeploy
-        restart:
-          always
+
 
