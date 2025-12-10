@@ -121,10 +121,11 @@ public class AccountServiceEjb implements AccountService {
         if (!isOwner && !isAccountAdvisor) {
             throw new SecurityException("Vous n'avez pas accès aux détails de ce compte.");
         }
-        // Calcul des intérêts : Solde * Taux / 100
         var rate = account.getAccountType().getRate();
         var balance = account.getBalance();
-        var interest = balance.multiply(rate).divide(new BigDecimal(100), RoundingMode.DOWN);
+        // TODO interest: Get all transactions over the last year, for each 15 day
+        //  calculate the backward amount and calculate the 15% interest then sum and count the total amount
+        var interest = BigDecimal.ZERO;
         var advisorName = (advisor != null)
                 ? advisor.getFirstname() + " " + advisor.getLastname()
                 : "Aucun Conseiller";
