@@ -1,6 +1,8 @@
 package com.ejbank.api.payload;
 
-public class PeoplePayload {
+import java.io.Serializable;
+
+public class PeoplePayload implements Serializable {
     
     private String firstname;
     private String lastname;

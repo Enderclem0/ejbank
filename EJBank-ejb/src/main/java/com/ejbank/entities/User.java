@@ -1,10 +1,13 @@
 package com.ejbank.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "ejbank_user")
-public class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "type")
+public abstract class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +21,15 @@ public class User {
 
     public User() {}
 
-    public int getId() { return id; }
-    public String getFirstname() { return firstname; }
-    public String getLastname() { return lastname; }
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

@@ -1,12 +1,12 @@
-package com.ejbank.api.payload;
+package com.ejbank.payloads;
 
 import java.util.Objects;
 
-public class UserPayload {
+public class UserDTO {
     private final String firstname;
     private final String lastname;
 
-    public UserPayload(String firstname, String lastname) {
+    public UserDTO(String firstname, String lastname) {
         Objects.requireNonNull(firstname, "firstname must not be null");
         Objects.requireNonNull(lastname, "lastname must not be null");
         this.firstname = firstname;
@@ -16,9 +16,9 @@ public class UserPayload {
     public String getFirstname() {
         return firstname;
     }
+
     public String getLastname() {
         return lastname;
     }
-
 
 }

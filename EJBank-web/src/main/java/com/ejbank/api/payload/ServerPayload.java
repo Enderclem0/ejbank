@@ -1,6 +1,8 @@
 package com.ejbank.api.payload;
 
-public class ServerPayload {
+import java.io.Serializable;
+
+public class ServerPayload implements Serializable {
 
     private final boolean result;
 

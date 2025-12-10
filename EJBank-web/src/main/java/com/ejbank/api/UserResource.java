@@ -1,8 +1,7 @@
 package com.ejbank.api;
 
-import com.ejbank.api.payload.UserPayload;
-import com.ejbank.entities.User;
-import com.ejbank.user.UserService;
+import com.ejbank.payloads.UserDTO;
+import com.ejbank.ejbs.user.UserService;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -19,11 +18,10 @@ public class UserResource {
 
     @GET
     @Path("/{user_id}")
-    public UserPayload getUserById(@PathParam("user_id") int userId) {
-        var user = userService.getUserById(userId);
-        if (user == null) {
-            return null;
-        }
-        return new UserPayload(user.getFirstname(), user.getLastname());
+    public UserDTO getUserById(@PathParam("user_id") int userId) {
+        var userOptional = userService.getUserById(userId);
+        if (userOptional.isEmpty()) return null;
+        var user = userOptional.get();
+        return new UserDTO(user.getFirstname(), user.getLastname());
     }
 }
