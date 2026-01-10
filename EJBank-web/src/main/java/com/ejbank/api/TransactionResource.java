@@ -119,13 +119,12 @@ public class TransactionResource {
 
     @GET
     @Path("/validation/notification/{user_id}")
-    public Integer notificationTransaction(@PathParam("user_id") Long user_id) {
+    public TransactionNotificationPayload notificationTransaction(@PathParam("user_id") Long user_id) {
         try {
-            int pendingCount = transactionService.countPendingTransactionsForUser(user_id);
-            return pendingCount;
+            return new TransactionNotificationPayload(transactionService.countPendingTransactionsForUser(user_id));
         } catch (Exception e) {
             System.err.println("Erreur lors du comptage des notifications: " + e.getMessage());
-            return 0; // Retourner 0 en cas d'erreur
+            return new TransactionNotificationPayload(0); // Retourner 0 en cas d'erreur
         }
     }
 }
