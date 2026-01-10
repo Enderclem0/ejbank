@@ -1,11 +1,11 @@
-package com.ejbank.api.payload.transaction;
+package com.ejbank.payloads.transaction;
 
-public class TransactionValidationPayload {
+public class TransactionValidationPayloadDTO {
     private Long transactionId;
     private Boolean approve;
     private Long author;
 
-    public TransactionValidationPayload(Long author, Boolean approve, Long transactionId) {
+    public TransactionValidationPayloadDTO(Long author, Boolean approve, Long transactionId) {
         this.author = author;
         this.approve = approve;
         this.transactionId = transactionId;

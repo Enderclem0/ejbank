@@ -1,14 +1,14 @@
-package com.ejbank.api.payload.transaction;
+package com.ejbank.payloads.transaction;
 
 import java.math.BigDecimal;
 
-public class TransactionBasicPayload {
+public class TransactionBasicPayloadDTO {
     private Long source;
     private Long destination;
     private BigDecimal amount;
     private Long author;
 
-    public TransactionBasicPayload(Long source, Long destination, BigDecimal amount, Long author) {
+    public TransactionBasicPayloadDTO(Long source, Long destination, BigDecimal amount, Long author) {
         this.source = source;
         this.destination = destination;
         this.amount = amount;

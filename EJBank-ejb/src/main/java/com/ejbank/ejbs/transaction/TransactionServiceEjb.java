@@ -1,8 +1,8 @@
 package com.ejbank.ejbs.transaction;
 
-import com.ejbank.api.payload.transaction.TransactionPayloadSubmission;
-import com.ejbank.api.payload.transaction.TransactionPreviewPayload;
-import com.ejbank.api.payload.transaction.TransactionSubmissionBasicPayload;
+import com.ejbank.payloads.transaction.TransactionPayloadSubmissionDTO;
+import com.ejbank.payloads.transaction.TransactionPreviewPayloadDTO;
+import com.ejbank.payloads.transaction.TransactionSubmissionBasicPayloadDTO;
 import com.ejbank.entities.Transaction;
 
 import javax.ejb.Stateless;
@@ -98,14 +98,14 @@ public class TransactionServiceEjb implements TransactionService {
     /**
      * Calcule les frais et vérifie la faisabilité d'une transaction.
      */
-    public TransactionPreviewPayload preview(Long sourceAccountId, BigDecimal amount) {
+    public TransactionPreviewPayloadDTO preview(Long sourceAccountId, BigDecimal amount) {
         BigDecimal currentBalance = new BigDecimal(10000L);//em.find(Account.class, sourceAccountId).getBalance();
 
         boolean isFeasible = currentBalance.compareTo(amount) != -1;
 
         BigDecimal newBalance = isFeasible ? currentBalance.subtract(amount) : currentBalance;
 
-        return new TransactionPreviewPayload(
+        return new TransactionPreviewPayloadDTO(
                 isFeasible,
                 currentBalance,
                 newBalance,
@@ -115,7 +115,7 @@ public class TransactionServiceEjb implements TransactionService {
     }
     // Dans TransactionService.java (Nouvelle méthode)
 
-    public TransactionPayloadSubmission apply(TransactionSubmissionBasicPayload payload) throws Exception {
+    public TransactionPayloadSubmissionDTO apply(TransactionSubmissionBasicPayloadDTO payload) throws Exception {
 
         Long sourceId = payload.getSource();
         Long destinationId = payload.getDestination();
@@ -124,11 +124,11 @@ public class TransactionServiceEjb implements TransactionService {
         String comment = payload.getComment();
 
         // 1. Récupérer les données de prévisualisation (pour vérifier à nouveau la faisabilité)
-        TransactionPreviewPayload preview = this.preview(sourceId, amount);
+        TransactionPreviewPayloadDTO preview = this.preview(sourceId, amount);
 
         if (!preview.getResult()) {
             // La transaction n'est plus faisable (solde insuffisant ou erreur)
-            return new TransactionPayloadSubmission(preview.getMessage(), false);
+            return new TransactionPayloadSubmissionDTO(preview.getMessage(), false);
         }
 
         // 2. Logique de création de l'Entité Transaction
@@ -159,6 +159,6 @@ public class TransactionServiceEjb implements TransactionService {
         // em.merge(destination);
 
         // Retourner le succès. Le conteneur EJB committera la transaction.
-        return new TransactionPayloadSubmission("Transaction appliquée avec succès.", true);
+        return new TransactionPayloadSubmissionDTO("Transaction appliquée avec succès.", true);
     }
 }

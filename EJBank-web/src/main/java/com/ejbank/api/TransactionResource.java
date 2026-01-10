@@ -3,6 +3,7 @@ package com.ejbank.api;
 import com.ejbank.api.payload.transaction.*;
 import com.ejbank.entities.Transaction;
 import com.ejbank.ejbs.transaction.TransactionServiceEjb;
+import com.ejbank.payloads.transaction.*;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
@@ -64,7 +65,7 @@ public class TransactionResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/preview")
-    public TransactionPreviewPayload previewTransaction(TransactionBasicPayload transactionBasicPayload) {
+    public TransactionPreviewPayloadDTO previewTransaction(TransactionBasicPayloadDTO transactionBasicPayload) {
         try {
             // Appeler la méthode de prévisualisation dans le service
             return transactionService.preview(
@@ -73,7 +74,7 @@ public class TransactionResource {
             );
         } catch (Exception e) {
             // Gérer les erreurs (ex: compte non trouvé)
-            return new TransactionPreviewPayload(
+            return new TransactionPreviewPayloadDTO(
                 false,
                 transactionBasicPayload.getAmount(),
                 transactionBasicPayload.getAmount(),
@@ -86,20 +87,20 @@ public class TransactionResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/apply")
-    public TransactionPayloadSubmission applyTransaction(TransactionSubmissionBasicPayload transactionBasicPayload) {
+    public TransactionPayloadSubmissionDTO applyTransaction(TransactionSubmissionBasicPayloadDTO transactionBasicPayload) {
         try {
             // Appeler la méthode d'application dans le service
             return transactionService.apply(transactionBasicPayload);
         } catch (Exception e) {
             // Gérer les erreurs (y compris celles levées par le service)
-            return new TransactionPayloadSubmission("Erreur lors de l'application: " + e.getMessage(), false);
+            return new TransactionPayloadSubmissionDTO("Erreur lors de l'application: " + e.getMessage(), false);
         }
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/validation")
-    public TransactionPayloadValidation validationTransaction(TransactionValidationPayload transactionValidationPayload) {
+    public TransactionPayloadValidationDTO validationTransaction(TransactionValidationPayloadDTO transactionValidationPayload) {
         Long transactionId = transactionValidationPayload.getTransactionId(); // Si c'est le champ ID
         Boolean approve = transactionValidationPayload.getApprove();
         Long authorId = transactionValidationPayload.getAuthor();
@@ -108,12 +109,12 @@ public class TransactionResource {
             boolean success = transactionService.transactionValidationPayload(transactionId, approve, authorId);
 
             if (success) {
-                return new TransactionPayloadValidation("Transaction validation successful.", true, null);
+                return new TransactionPayloadValidationDTO("Transaction validation successful.", true, null);
             } else {
-                return new TransactionPayloadValidation("Validation failed, transaction not found or state incorrect.", false, null);
+                return new TransactionPayloadValidationDTO("Validation failed, transaction not found or state incorrect.", false, null);
             }
         } catch (Exception e) {
-            return new TransactionPayloadValidation("Internal Server Error: " + e.getMessage(), false, e);
+            return new TransactionPayloadValidationDTO("Internal Server Error: " + e.getMessage(), false, e);
         }
     }
 

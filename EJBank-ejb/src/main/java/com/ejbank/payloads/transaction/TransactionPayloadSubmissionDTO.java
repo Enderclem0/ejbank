@@ -1,10 +1,9 @@
-package com.ejbank.api.payload.transaction;
+package com.ejbank.payloads.transaction;
 
-public class TransactionPayloadSubmission {
+public class TransactionPayloadSubmissionDTO {
     private Boolean result;
     private String message;
-
-    public TransactionPayloadSubmission(String message, Boolean result) {
+    public TransactionPayloadSubmissionDTO(String message, Boolean result) {
         this.message = message;
         this.result = result;
     }

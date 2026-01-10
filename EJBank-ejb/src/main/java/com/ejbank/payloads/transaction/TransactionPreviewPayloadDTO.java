@@ -1,12 +1,12 @@
-package com.ejbank.api.payload.transaction;
+package com.ejbank.payloads.transaction;
 
 import java.math.BigDecimal;
 
-public class TransactionPreviewPayload extends TransactionPayloadValidation {
+public class TransactionPreviewPayloadDTO extends TransactionPayloadValidationDTO {
     private BigDecimal before;
     private BigDecimal after;
 
-    public TransactionPreviewPayload(Boolean result, BigDecimal before, BigDecimal after, String message, Exception error) {
+    public TransactionPreviewPayloadDTO(Boolean result, BigDecimal before, BigDecimal after, String message, Exception error) {
         super(message, result, error);
         this.before = before;
         this.after = after;

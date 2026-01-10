@@ -1,11 +1,11 @@
-package com.ejbank.api.payload.transaction;
+package com.ejbank.payloads.transaction;
 
 import java.math.BigDecimal;
 
-public class TransactionSubmissionBasicPayload extends  TransactionBasicPayload {
+public class TransactionSubmissionBasicPayloadDTO extends  TransactionBasicPayloadDTO {
     private String comment;
 
-    public TransactionSubmissionBasicPayload(Long source, Long destination, BigDecimal amount, String comment, Long author) {
+    public TransactionSubmissionBasicPayloadDTO(Long source, Long destination, BigDecimal amount, String comment, Long author) {
         super(source, destination, amount, author);
         this.comment = comment;
     }

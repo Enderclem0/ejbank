@@ -1,9 +1,11 @@
 package com.ejbank.api.payload.transaction;
 
+import com.ejbank.payloads.transaction.TransactionSubmissionBasicPayloadDTO;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 
-public class TransactionPayload extends TransactionSubmissionBasicPayload {
+public class TransactionPayload extends TransactionSubmissionBasicPayloadDTO {
 
     public enum State{
         APPLYED,
