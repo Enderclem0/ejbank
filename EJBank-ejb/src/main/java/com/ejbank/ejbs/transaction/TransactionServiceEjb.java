@@ -1,5 +1,6 @@
 package com.ejbank.ejbs.transaction;
 
+import com.ejbank.entities.Account;
 import com.ejbank.payloads.transaction.TransactionPayloadSubmissionDTO;
 import com.ejbank.payloads.transaction.TransactionPreviewPayloadDTO;
 import com.ejbank.payloads.transaction.TransactionSubmissionBasicPayloadDTO;
@@ -99,7 +100,7 @@ public class TransactionServiceEjb implements TransactionService {
      * Calcule les frais et vérifie la faisabilité d'une transaction.
      */
     public TransactionPreviewPayloadDTO preview(Long sourceAccountId, BigDecimal amount) {
-        BigDecimal currentBalance = new BigDecimal(10000L);//em.find(Account.class, sourceAccountId).getBalance();
+        BigDecimal currentBalance = em.find(Account.class, sourceAccountId).getBalance();
 
         boolean isFeasible = currentBalance.compareTo(amount) != -1;
 
@@ -147,16 +148,16 @@ public class TransactionServiceEjb implements TransactionService {
 
         // 3. Logique de mise à jour des soldes (Nécessite l'Entité Account)
 
-        // Account source = em.find(Account.class, sourceId);
-        // Account destination = em.find(Account.class, destinationId);
+        Account source = em.find(Account.class, sourceId);
+        Account destination = em.find(Account.class, destinationId);
 
         // // Débit
-        // source.setBalance(source.getBalance() - preview.getAmountToDebit());
+        source.setBalance(source.getBalance().subtract(amount));
         // // Crédit
-        // destination.setBalance(destination.getBalance() + amount);
+        destination.setBalance(destination.getBalance().add(amount));
 
-        // em.merge(source);
-        // em.merge(destination);
+        em.merge(source);
+        em.merge(destination);
 
         // Retourner le succès. Le conteneur EJB committera la transaction.
         return new TransactionPayloadSubmissionDTO("Transaction appliquée avec succès.", true);

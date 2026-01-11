@@ -1,12 +1,13 @@
 package com.ejbank.entities;
 
 import javax.persistence.*; // Notez le '*' pour inclure GenerationType
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Date;
 
 @Entity
 @Table(name = "ejbank_transaction")
-public class Transaction {
+public class Transaction implements Serializable {
 
     // 1. CLÉ PRIMAIRE AVEC GÉNÉRATION
     @Id
