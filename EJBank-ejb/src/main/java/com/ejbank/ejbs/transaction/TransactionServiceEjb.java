@@ -105,12 +105,12 @@ public class TransactionServiceEjb implements TransactionService {
         boolean isFeasible = currentBalance.compareTo(amount) != -1;
 
         BigDecimal newBalance = isFeasible ? currentBalance.subtract(amount) : currentBalance;
-
+        var message = isFeasible ? "Votre nouveau solde après cette opération sera de " + newBalance : "Vous ne disposez pas d'un solde suffisant.";
         return new TransactionPreviewPayloadDTO(
                 isFeasible,
                 currentBalance,
                 newBalance,
-                "Calcul OK", // message
+                message,
                 null // error
         );
     }
